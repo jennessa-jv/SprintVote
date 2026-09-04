@@ -1,63 +1,52 @@
-import { API } from "../config/api";
+import api from "../config/api";
 
-export async function loginUser(email, password) {
-    const response = await fetch(
-        `${API}/api/auth/login`,
-        {
-            method: "POST",
+// LOGIN
 
-            headers: {
-                "Content-Type": "application/json"
-            },
+export async function loginUser(email, password) { //this email and passowrd comes from the frontend
 
-            body: JSON.stringify({
-                email,
-                password
-            })
-        }
-    );
+  const response = await api.post(  //posting to the backedn and returning the data:
+//     POST /api/auth/login
+// Content-Type: application/json
 
-    const data = await response.json();
-
-    if (!response.ok) {
-        throw new Error(
-            data.error || "Login failed"
-        );
+// {
+//     "email": "john@gmail.com",
+//     "password": "123456"
+// }
+    "/auth/login",
+    {
+      email,
+      password
     }
+  );
+//   response = {
+//     data: {
+//         token: "...",
+//         user: {...}
+//     },
+//     status: 200,
+//     headers: {...}
+// }
 
-    return data;
+  return response.data;  //data is token and user(has name email pass)
 }
 
 
-export async function signupUser(
-    name,
-    email,
-    password
+// SIGNUP
+
+export async function signupUser( //name email and password fromthe user frontend
+  name,
+  email,
+  password
 ) {
-    const response = await fetch(
-        `${API}/api/auth/signup`,
-        {
-            method: "POST",
 
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-                name,
-                email,
-                password
-            })
-        }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-        throw new Error(
-            data.error || "Signup failed"
-        );
+  const response = await api.post( // the details are sen tto the backend url
+    "/auth/signup",
+    {
+      name,
+      email,
+      password
     }
+  );
 
-    return data;
+  return response.data; 
 }

@@ -1,88 +1,46 @@
-import { API } from "../config/api";
 
-
-function getAuthHeaders() {
-    const token =
-        localStorage.getItem("token");
-
-    return {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-    };
-}
-
+import api from "../config/api";
+// api/historyApi.js
+//       ↓ ..
+// src/
+//       ↓ config/api.js
 
 // CREATE ROOM
-export async function createRoom(story) {
 
-    const response = await fetch(
-        `${API}/api/rooms`,
+export async function createRoom(story) { //from the frontend
+
+    const response = await api.post(
+        "/rooms",
         {
-            method: "POST",
-
-            headers: getAuthHeaders(),
-
-            body: JSON.stringify({
-                story
-            })
+            story
         }
     );
+    console.log(response.data);
+    return response.data;
 
-    const data = await response.json();
-
-    if (!response.ok) {
-        throw new Error(
-            data.error || "Could not create room"
-        );
-    }
-
-    return data;
 }
 
 
 // JOIN ROOM
+
 export async function joinRoom(roomCode) {
 
-    const response = await fetch(
-        `${API}/api/rooms/${roomCode}/join`,
-        {
-            method: "POST",
-
-            headers: getAuthHeaders()
-        }
+    const response = await api.post(
+        `/rooms/${roomCode}/join`
     );
 
-    const data = await response.json();
-
-    if (!response.ok) {
-        throw new Error(
-            data.error || "Could not join room"
-        );
-    }
-
-    return data;
+    return response.data;
 }
 
 
 // GET ROOM
+
 export async function getRoom(roomCode) {
 
-    const response = await fetch(
-        `${API}/api/rooms/${roomCode}`,
-        {
-            method: "GET",
-
-            headers: getAuthHeaders()
-        }
+    const response = await api.get(  //getting a room from the roomcode shared by someone
+        `/rooms/${roomCode}`
     );
 
-    const data = await response.json();
-
-    if (!response.ok) {
-        throw new Error(
-            data.error || "Could not get room"
-        );
-    }
-
-    return data;
+    return response.data;
 }
+

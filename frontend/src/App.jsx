@@ -1,211 +1,138 @@
+import { useState } from "react";
 import {
-    useEffect,
-    useState
-} from "react";
+    BrowserRouter,  //?BrowerRouter, Routes, Route
+    Routes,
+    Route,
+    Navigate,
+    useNavigate
+} from "react-router-dom";
 
-import Login
-    from "./auth/Login";
-
-import Signup
-    from "./auth/Signup";
-
-import Home
-    from "./home/Home";
-
-import Room
-    from "./room/Room";
-
-import History
-    from "./history/History";
+import Login from "./auth/Login";
+import Signup from "./auth/Signup";
+import Home from "./home/Home";
+import Room from "./room/Room";
+import History from "./history/History";
 
 import "./App.css";
 
 
 function App() {
+    const [user, setUser] = useState(() => {
+        const storedUser =
+            localStorage.getItem("user");
 
-    const [user, setUser] =
-        useState(() => {
-
-            const storedUser =
-                localStorage.getItem("user");
-
-            return storedUser
-                ? JSON.parse(storedUser)
-                : null;
-
-        });
+        return storedUser
+            ? JSON.parse(storedUser)
+            : null;
+    });
 
 
-    const [page, setPage] =
-        useState(() => {
+    function handleLogin(userData) { //comes from the frintend which was 
 
-            const storedUser =
-                localStorage.getItem("user");
-
-            const storedPage =
-                localStorage.getItem(
-                    "currentPage"
-                );
-
-            if (!storedUser) {
-                return "login";
-            }
-
-            return storedPage || "home";
-
-        });
-
-
-    function goToPage(newPage) {
-
-        setPage(newPage);
+        setUser(userData);
 
         localStorage.setItem(
-            "currentPage",
-            newPage
+            "user",
+            JSON.stringify(userData)
         );
-
     }
 
 
     function handleLogout() {
 
-        localStorage.removeItem(
-            "token"
-        );
-
-        localStorage.removeItem(
-            "user"
-        );
-
-        localStorage.removeItem(
-            "currentPage"
-        );
-
-        localStorage.removeItem(
-            "currentRoom"
-        );
-
-        localStorage.removeItem(
-            "currentStory"
-        );
-
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        localStorage.removeItem("currentRoom");
+        localStorage.removeItem("currentStory");
 
         setUser(null);
-
-        setPage("login");
-
     }
 
 
-    // ================================================
-    // NOT LOGGED IN
-    // ================================================
+    return (
+        <BrowserRouter>
 
-    if (!user) {
+            <Routes>
 
-        if (page === "signup") {
-
-            return (
-                <Signup
-                    onLogin={() =>
-                        goToPage("login")
-                    }
-                />
-            );
-
-        }
-
-
-        return (
-            <Login
-
-                onLogin={userData => {
-
-                    setUser(
-                        userData
-                    );
-
-                    goToPage(
-                        "home"
-                    );
-
-                }}
-
-
-                onSignup={() =>
-                    goToPage(
-                        "signup"
-                    )
-                }
-
-            />
-        );
-
+                {/* LOGIN */}
+                <Route
+    path="/login"
+    element={
+        <Login
+            onLogin={handleLogin}
+           
+        />
     }
+/>
 
 
-    // ================================================
-    // LOGGED IN
-    // ================================================
+                {/* SIGNUP */}
+                <Route
+                    path="/signup"
+                    element={
+                        <Signup />
+                    }
+                />
 
-    switch (page) {
 
-        case "room":
-
-            return (
-                <Room
-                    user={user}
-
-                    onHome={() =>
-                        goToPage(
-                            "home"
+                {/* HOME */}
+                <Route
+                    path="/home"
+                    element={
+                        user ? (   //will check whether the user is stored in the browser
+                            <Home
+                                user={user}
+                                onLogout={handleLogout}
+                            />
+                        ) : (
+                            <Navigate to="/login" />
                         )
                     }
                 />
-            );
 
 
-        case "history":
-
-            return (
-                <History
-                    onHome={() =>
-                        goToPage(
-                            "home"
+                {/* ROOM */}
+                <Route
+                    path="/room"
+                    element={
+                        user ? (
+                            <Room
+                                user={user}
+                            />
+                        ) : (
+                            <Navigate to="/login" />
                         )
                     }
                 />
-            );
 
 
-        case "home":
-
-        default:
-
-            return (
-                <Home
-                    user={user}
-
-                    onRoom={() =>
-                        goToPage(
-                            "room"
+                {/* HISTORY */}
+                <Route
+                    path="/history"
+                    element={
+                        user ? (
+                            <History />
+                        ) : (
+                            <Navigate to="/login" />
                         )
-                    }
-
-                    onHistory={() =>
-                        goToPage(
-                            "history"
-                        )
-                    }
-
-                    onLogout={
-                        handleLogout
                     }
                 />
-            );
 
-    }
+
+                {/* DEFAULT */}
+                <Route
+                    path="*"
+                    element={
+                        <Navigate
+                            to={user ? "/home" : "/login"}
+                        />
+                    }
+                />
+
+            </Routes>
+
+        </BrowserRouter>
+    );
 }
 
 

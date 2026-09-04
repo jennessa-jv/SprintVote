@@ -1,8 +1,8 @@
 import { io } from "socket.io-client";
 
-import { API } from "../config/api";
+import api from "../config/api";
 
 
 export function createSocket() {
-    return io(API);
+    return io(api); //io to the backend url
 }

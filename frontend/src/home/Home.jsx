@@ -17,7 +17,7 @@ function Home({
                     </h1>
 
                     <p>
-                        Welcome, {user.name}
+                        Welcome, {user.name} // the user that app had stored
                     </p>
 
                 </div>
@@ -25,7 +25,7 @@ function Home({
 
                 <button
                     className="logout"
-                    onClick={onLogout}
+                    onClick={onLogout}  //from app
                 >
                     Logout
                 </button>

@@ -200,7 +200,7 @@ function Room({
         try {
 
             const data =
-                await joinRoom(
+                await joinRoom( //backend
                     roomCode.trim()
                 );
 

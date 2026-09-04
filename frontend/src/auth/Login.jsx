@@ -1,13 +1,12 @@
 import { useState } from "react";
 
 import { loginUser } from "../api/authApi";
-
+import { useNavigate } from "react-router-dom";
 
 function Login({
-    onLogin,
-    onSignup
+    onLogin, 
 }) {
-
+  const navigate=useNavigate();
     const [email, setEmail] =
         useState("");
 
@@ -21,16 +20,45 @@ function Login({
     async function handleLogin() {
 
         setError("");
+        // validation
+         if (!email.trim()) {
+             setError( "Please enter your email." ); 
+            return; 
+        } 
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+             if (!emailRegex.test(email))
+                 { setError( "Please enter a valid email address." ); return;
 
+                  } 
+                  if (!password) {
+                     setError( "Please enter your password." ); return; 
+                    }
         try {
 
             const data =
-                await loginUser(
+                await loginUser( //login user from the auth file axios sends it to the backend
                     email,
                     password
                 );
+//                 data from the backend fetched by axios is now:
 
-
+// data = {
+//     token: "...",
+//     user: {
+//         id: 1,
+//         name: "John",
+//         email: "john@gmail.com"
+//     }
+// }
+// So you can access:
+// data.token
+// and:
+// data.user
+if (!data.token) { //incase token is undefined
+            throw new Error(
+                "Login failed: server did not return a token."
+            );
+        }
             localStorage.setItem(
                 "token",
                 data.token
@@ -41,9 +69,23 @@ function Login({
                 "user",
                 JSON.stringify(data.user)
             );
+            
 
-
-            onLogin(data.user);
+// so basically onLogin=handleLogin from app
+            onLogin(data.user); //from where does this come from?
+{/*      This is a callback function provided by the parent component, probably your App.jsx.
+The Login component is essentially saying:
+"Login was successful. Here's the logged-in user's information."
+For example:
+onLogin({
+    id: 1,
+    name: "John",
+    email: "john@gmail.com"
+});
+Your App can then update its state:
+setUser(data.user);
+and React can switch from:
+Login Page to the home page */}
 
         } catch (error) {
 
@@ -109,11 +151,30 @@ function Login({
                 >
                     Login
                 </button>
-
+{/* Login component, I'm giving you my handleLogin function. You can call it when you need to tell me that the login succeeded."
+This is passing a function as a prop.
+Think of it as:
+App
+ │ handleLogin function
+ ↓
+Login
+ │ receives it as onLogin */}
+ {/* Login receives it
+Your Login component says:
+function Login({
+    onLogin,
+    onSignup
+}) {
+This is destructuring props.
+React essentially gives Login an object like:
+{
+    onLogin: handleLogin,
+    onSignup: someFunction
+} */}
 
                 <button
                     className="secondary"
-                    onClick={onSignup}
+                    onClick={()=>navigate("/signup")} //this comes from app thru login heading callback
                 >
                     Create Account
                 </button>

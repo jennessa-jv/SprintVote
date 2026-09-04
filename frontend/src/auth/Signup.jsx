@@ -1,11 +1,11 @@
-import { useState } from "react";
 
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { signupUser } from "../api/authApi";
 
+function Signup() {
 
-function Signup({
-    onLogin
-}) {
+    const navigate = useNavigate();
 
     const [name, setName] =
         useState("");
@@ -32,17 +32,16 @@ function Signup({
                 password
             );
 
-
             alert(
                 "Account created! Please login."
             );
 
-
-            onLogin();
+            navigate("/login");
 
         } catch (error) {
 
             setError(
+                error.response?.data?.message ||
                 error.message
             );
 
@@ -115,7 +114,9 @@ function Signup({
 
                 <button
                     className="secondary"
-                    onClick={onLogin}
+                    onClick={() =>
+                        navigate("/login")
+                    }
                 >
                     Back to Login
                 </button>

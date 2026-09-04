@@ -4,14 +4,18 @@ import {
 } from "react";
 
 import {
+    useNavigate
+} from "react-router-dom";
+
+import {
     getHistory,
     getHistorySession
 } from "../api/historyApi";
 
 
-function History({
-    onHome
-}) {
+function History() {
+
+    const navigate = useNavigate();
 
     const [history, setHistory] =
         useState([]);
@@ -35,20 +39,18 @@ function History({
             const data =
                 await getHistory();
 
-            setHistory(
-                data
-            );
+            setHistory(data);
 
         } catch (error) {
 
             setError(
+                error.response?.data?.error ||
                 error.message
             );
 
         } finally {
 
             setLoading(false);
-
         }
     }
 
@@ -58,20 +60,16 @@ function History({
         try {
 
             const data =
-                await getHistorySession(
-                    id
-                );
+                await getHistorySession(id);
 
-            setSelected(
-                data
-            );
+            setSelected(data);
 
         } catch (error) {
 
             setError(
+                error.response?.data?.error ||
                 error.message
             );
-
         }
     }
 
@@ -84,6 +82,7 @@ function History({
 
 
     return (
+
         <div className="page">
 
             <header>
@@ -95,7 +94,9 @@ function History({
 
                 <button
                     className="secondary"
-                    onClick={onHome}
+                    onClick={() =>
+                        navigate("/home")
+                    }
                 >
                     Home
                 </button>
@@ -135,11 +136,10 @@ function History({
                         </p>
 
                     </div>
-
                 )}
 
 
-                {history.map(
+                {history.map( //session prolly from the backend
                     session => (
 
                         <div
@@ -176,7 +176,6 @@ function History({
                             </small>
 
                         </div>
-
                     )
                 )}
 
@@ -226,12 +225,10 @@ function History({
                                     </strong>
 
                                 </div>
-
                             )
                         )}
 
                     </div>
-
                 )}
 
             </main>
