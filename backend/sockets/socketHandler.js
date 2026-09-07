@@ -25,12 +25,12 @@ function setupSocketHandlers(io) {
         // JOIN ROOM
         // ============================================
 
-        socket.on(
+        socket.on(  //from the frontend
     "join-room",
     async ({
         roomCode,
         userId
-    }) => {
+    }) => {    //as i had studied this is a callback
 
         socket.join(roomCode);
 
@@ -61,11 +61,11 @@ function setupSocketHandlers(io) {
             // on this socket
 
             socket.playerName =
-                currentPlayer?.name;
+                currentPlayer?.name;  //database
 
             socket.isModerator =
                 Boolean(
-                    currentPlayer?.is_moderator
+                    currentPlayer?.is_moderator //database
                 );
 
 
@@ -151,11 +151,28 @@ function setupSocketHandlers(io) {
                 if (!socket.playerName) {
                     return;
                 }
+//     The backend then checks:
 
+// if (!socket.userId) {
+//     return;
+// }
+
+// and:
+
+// if (!socket.playerName) {
+//     return;
+// }
+
+// Remember earlier when you stored:
+
+// socket.userId = userId;
+// socket.playerName = currentPlayer?.name;
+
+// That's why the backend now knows who submitted the vote.
 
                 try {
 
-                    await saveVote(
+                    await saveVote( //goes to redis
                         roomCode,
                         socket.userId,
                         socket.playerName,
@@ -207,7 +224,7 @@ function setupSocketHandlers(io) {
                 try {
 
                     const votes =
-                        await getVotes(
+                        await getVotes(  //from redis
                             roomCode
                         );
 
@@ -271,6 +288,23 @@ function setupSocketHandlers(io) {
                     await resetVotes(
                         socket.roomCode
                     );
+// await resetVotes(
+//     socket.roomCode
+// );
+
+// which does:
+
+// await redisClient.del(
+//     getVoteKey(roomCode)
+// );
+
+// So:
+
+// Redis
+
+// votes:ABC123
+
+// is deleted.
 
 
                     io.to(

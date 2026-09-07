@@ -117,7 +117,7 @@ function addPlayer(
     roomCode,
     userId,
     name,
-    isModerator = false
+    isModerator 
 ) {
     return new Promise((resolve, reject) => {
         db.query(

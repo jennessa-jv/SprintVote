@@ -11,9 +11,9 @@ const {
 } = require("../utils/roomUtils");
 
 
-async function createRoomController(req, res) {
-    const { story } = req.body;
-
+async function createRoomController(req, res) {  //from routes and middleware
+    const { story } = req.body; //from middleware
+    const isModerator = true; //from middleware
     const userId = req.user.userId;
     const userName = req.user.name;
 
@@ -27,7 +27,7 @@ async function createRoomController(req, res) {
         const roomCode =
             generateRoomCode();
 
-        await createRoom(
+        await createRoom(  //to sql
             roomCode,
             story
         );
@@ -36,13 +36,13 @@ async function createRoomController(req, res) {
             roomCode,
             userId,
             userName,
-            true
+            isModerator
         );
 
         res.status(201).json({
             roomCode,
             story,
-            isModerator: true
+            isModerator
         });
 
     } catch (error) {
@@ -58,17 +58,17 @@ async function createRoomController(req, res) {
 
 async function joinRoom(req, res) {
     const roomCode =
-        req.params.roomCode;
+        req.params.roomCode;  //from the url
 
     const userId =
-        req.user.userId;
+        req.user.userId;  //from jwt token in the middleware
 
     const userName =
         req.user.name;
 
     try {
         const room =
-            await getRoom(roomCode);
+            await getRoom(roomCode);  //sql query in services
 
         if (!room) {
             return res.status(404).json({
@@ -77,7 +77,7 @@ async function joinRoom(req, res) {
             });
         }
 
-        const existingPlayer =
+        const existingPlayer =   //again a sql query
             await getPlayer(
                 roomCode,
                 userId
@@ -86,10 +86,10 @@ async function joinRoom(req, res) {
         if (existingPlayer) {
             return res.json({
                 roomCode,
-                story: room.story,
+                story: room.story, //from the database
                 isModerator:
                     Boolean(
-                        existingPlayer.is_moderator
+                        existingPlayer.is_moderator   //from the database
                     )
             });
         }

@@ -4,7 +4,7 @@ import { loginUser } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
 
 function Login({
-    onLogin, 
+    onLogin,  //passed from app.jsx
 }) {
   const navigate=useNavigate();
     const [email, setEmail] =
@@ -23,7 +23,7 @@ function Login({
         // validation
          if (!email.trim()) {
              setError( "Please enter your email." ); 
-            return; 
+            // return; 
         } 
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
              if (!emailRegex.test(email))
@@ -69,11 +69,11 @@ if (!data.token) { //incase token is undefined
                 "user",
                 JSON.stringify(data.user)
             );
-            
-
+           
 // so basically onLogin=handleLogin from app
             onLogin(data.user); //from where does this come from?
-{/*      This is a callback function provided by the parent component, probably your App.jsx.
+            navigate("/home");
+/*      This is a callback function provided by the parent component, probably your App.jsx.
 The Login component is essentially saying:
 "Login was successful. Here's the logged-in user's information."
 For example:
@@ -85,15 +85,14 @@ onLogin({
 Your App can then update its state:
 setUser(data.user);
 and React can switch from:
-Login Page to the home page */}
+Login Page to the home page */
 
-        } catch (error) {
-
-            setError(
-                error.message
-            );
-
-        }
+       } catch (error) {
+    setError(
+        error.response?.data?.error ||
+        error.message
+    );
+}
     }
 
 
@@ -115,16 +114,15 @@ Login Page to the home page */}
                 </h2>
 
 
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={e =>
-                        setEmail(
-                            e.target.value
-                        )
-                    }
-                />
+              <input
+    type="email"
+    placeholder="Email"
+    value={email}
+    onChange={e => {
+        console.log("EMAIL:", e.target.value);
+        setEmail(e.target.value);
+    }}
+/>
 
 
                 <input
@@ -158,8 +156,8 @@ App
  │ handleLogin function
  ↓
 Login
- │ receives it as onLogin */}
- {/* Login receives it
+ │ receives it as onLogin */
+ /* Login receives it
 Your Login component says:
 function Login({
     onLogin,
@@ -170,7 +168,7 @@ React essentially gives Login an object like:
 {
     onLogin: handleLogin,
     onSignup: someFunction
-} */}
+}  */}
 
                 <button
                     className="secondary"

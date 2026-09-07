@@ -18,7 +18,7 @@ function History() {
     const navigate = useNavigate();
 
     const [history, setHistory] =
-        useState([]);
+        useState([]);  //an array which will load from backend
 
     const [selected, setSelected] =
         useState(null);

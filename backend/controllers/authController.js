@@ -1,4 +1,4 @@
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcryptjs"); //hash and compare
 const jwt = require("jsonwebtoken");
 
 const db = require("../db");
@@ -7,7 +7,7 @@ const { JWT_SECRET } = require("../config/config");
 
 async function signup(req, res) {
     const {
-        name,
+        name, //destructuring here
         email,
         password
     } = req.body;
@@ -50,11 +50,11 @@ async function signup(req, res) {
                     });
                 }
 
-                const hashedPassword =
-                    await bcrypt.hash(
-                        password,
-                        10
-                    );
+                // const hashedPassword =
+                //     await bcrypt.hash(
+                //         password,
+                //         10
+                //     );
 
                 db.query(
                     `
@@ -65,7 +65,8 @@ async function signup(req, res) {
                     [
                         name,
                         email,
-                        hashedPassword
+                        // hashedPassword
+                        password
                     ],
                     (insertErr, result) => {
 
@@ -138,22 +139,22 @@ function login(req, res) {
 
             const user = users[0];
 
-            const correct =
-                await bcrypt.compare(
-                    password,
-                    user.password
-                );
+            // const correct =
+            //     await bcrypt.compare(
+            //         password,
+            //         user.password
+            //     );
 
-            if (!correct) {
-                return res.status(401).json({
-                    error:
-                        "Invalid email or password"
-                });
-            }
+            // if (!correct) {
+            //     return res.status(401).json({
+            //         error:
+            //             "Invalid email or password"
+            //     });
+            // }
 
-            const token = jwt.sign(
+            const token = jwt.sign(  //where we're making the tokem -3 parts data secret and expiry
                 {
-                    userId: user.id,
+                    userId: user.id,   //use this everywhere to identify the user
                     name: user.name,
                     email: user.email
                 },

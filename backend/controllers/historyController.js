@@ -1,6 +1,6 @@
 const db = require("../db");
 
-
+//voting sessions and players see schema properly!!!!!!!!!!!!!!!!!!1
 function getHistory(req, res) {
     const userId =
         req.user.userId;

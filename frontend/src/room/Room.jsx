@@ -5,6 +5,10 @@ import {
 } from "react";
 
 import {
+    useNavigate
+} from "react-router-dom";
+
+import {
     createRoom,
     joinRoom
 } from "../api/roomApi";
@@ -23,10 +27,10 @@ import Results
     from "./Results";
 
 
-function Room({
-    user,
-    onHome
-}) {
+function Room({ user }) {
+
+    const navigate = useNavigate();
+
 
     // ==================================================
     // INITIAL STATE
@@ -110,7 +114,8 @@ function Room({
     const socketRef =
         useRef(null);
 
-
+//?You want React to remember the socket without causing a re-render every time you change it.
+//?why socketRef because in the below code there are some functions where the soxket isnt defined, so its just a variable to store it
     // ==================================================
     // CREATE ROOM
     // ==================================================
@@ -119,7 +124,7 @@ function Room({
 
         setError("");
 
-        if (!story.trim()) {
+        if (!story.trim()) {  //from localstorage
 
             setError(
                 "User story is required"
@@ -132,7 +137,7 @@ function Room({
         try {
 
             const data =
-                await createRoom(
+                await createRoom( //goes to the api and then to the backend  which now equals data
                     story
                 );
 
@@ -200,7 +205,7 @@ function Room({
         try {
 
             const data =
-                await joinRoom( //backend
+                await joinRoom(
                     roomCode.trim()
                 );
 
@@ -428,7 +433,6 @@ function Room({
             }
         );
 
-
         setMode(
             "playing"
         );
@@ -479,8 +483,8 @@ function Room({
     // VOTE
     // ==================================================
 
-    function handleVote(value) {
-
+    function handleVote(value) {  //after clicking the voting card
+                 //the value from the card
         if (
             revealed ||
             !socketRef.current
@@ -559,7 +563,7 @@ function Room({
 
 
     // ==================================================
-    // LEAVE ROOM
+    // LEAVE ROOM / GO HOME
     // ==================================================
 
     function handleLeaveRoom() {
@@ -609,7 +613,8 @@ function Room({
         setMode("menu");
 
 
-        onHome();
+        // React Router navigation
+        navigate("/home");
 
     }
 
@@ -632,7 +637,9 @@ function Room({
 
                     <button
                         className="secondary"
-                        onClick={onHome}
+                        onClick={() =>
+                            navigate("/home")
+                        }
                     >
                         Home
                     </button>

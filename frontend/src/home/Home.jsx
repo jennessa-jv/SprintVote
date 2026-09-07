@@ -1,9 +1,11 @@
+import { useNavigate } from "react-router-dom";
+
 function Home({
-    user,
-    onRoom,
-    onHistory,
+    user, //from the app
     onLogout
 }) {
+
+    const navigate = useNavigate();
 
     return (
         <div className="page">
@@ -17,15 +19,14 @@ function Home({
                     </h1>
 
                     <p>
-                        Welcome, {user.name} // the user that app had stored
+                        Welcome, {user.name} //the user that app haad stored(data.user)
                     </p>
 
                 </div>
 
-
                 <button
                     className="logout"
-                    onClick={onLogout}  //from app
+                    onClick={onLogout}
                 >
                     Logout
                 </button>
@@ -52,7 +53,9 @@ function Home({
                 <div className="dashboard-buttons">
 
                     <button
-                        onClick={onRoom}
+                        onClick={() =>
+                            navigate("/room")
+                        }
                     >
                         Create / Join Room
                     </button>
@@ -60,7 +63,9 @@ function Home({
 
                     <button
                         className="secondary"
-                        onClick={onHistory}
+                        onClick={() =>
+                            navigate("/history")
+                        }
                     >
                         View Voting History
                     </button>
@@ -72,6 +77,5 @@ function Home({
         </div>
     );
 }
-
 
 export default Home;

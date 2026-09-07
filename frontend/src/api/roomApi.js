@@ -15,8 +15,8 @@ export async function createRoom(story) { //from the frontend
             story
         }
     );
-    console.log(response.data);
-    return response.data;
+    console.log(response.data); //fromt he backend
+    return response.data;  //returned form the backend to the frontend
 
 }
 

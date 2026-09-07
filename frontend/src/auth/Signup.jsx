@@ -26,7 +26,7 @@ function Signup() {
 
         try {
 
-            await signupUser(
+            await signupUser(  //to authapi
                 name,
                 email,
                 password
@@ -39,10 +39,9 @@ function Signup() {
             navigate("/login");
 
         } catch (error) {
-
             setError(
                 error.response?.data?.message ||
-                error.message
+                  error.response?.data?.error 
             );
 
         }

@@ -47,6 +47,5 @@ export async function signupUser( //name email and password fromthe user fronten
       password
     }
   );
-
   return response.data; 
 }
