@@ -19,7 +19,8 @@ function Home({
                     </h1>
 
                     <p>
-                        Welcome, {user.name} //the user that app haad stored(data.user)
+                        Welcome, {user.name}
+                         {/* //the user that app haad stored(data.user) */}
                     </p>
 
                 </div>

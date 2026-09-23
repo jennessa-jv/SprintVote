@@ -50,11 +50,11 @@ async function signup(req, res) {
                     });
                 }
 
-                // const hashedPassword =
-                //     await bcrypt.hash(
-                //         password,
-                //         10
-                //     );
+                const hashedPassword =
+                    await bcrypt.hash(
+                        password,
+                        10
+                    );
 
                 db.query(
                     `
@@ -133,24 +133,24 @@ function login(req, res) {
             if (users.length === 0) {
                 return res.status(401).json({
                     error:
-                        "Invalid email or password"
+                        "create account"
                 });
             }
 
             const user = users[0];
 
-            // const correct =
-            //     await bcrypt.compare(
-            //         password,
-            //         user.password
-            //     );
+            const correct =
+                await bcrypt.compare(
+                    password,
+                    user.password
+                );
 
-            // if (!correct) {
-            //     return res.status(401).json({
-            //         error:
-            //             "Invalid email or password"
-            //     });
-            // }
+            if (!correct) {
+                return res.status(401).json({
+                    error:
+                        "Invalid email or password"
+                });
+            }
 
             const token = jwt.sign(  //where we're making the tokem -3 parts data secret and expiry
                 {
